@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Excel = Microsoft.Office.Interop.Excel;
 using ToolCommon;
+using Microsoft.Office.Interop.Excel;
 
 namespace DbDumpTool
 {
@@ -42,6 +43,11 @@ namespace DbDumpTool
             // 新規シート作成
             Excel.Worksheet excelSheet = this.excelBook.ComObject.Worksheets.Add();
             excelSheet.Name = sheetname;
+
+            // シート内の全セルの設定
+            excelSheet.Cells.Font.Name = "Meiryo UI"; //フォント
+            excelSheet.Cells.NumberFormat = "@"; //書式: 文字列
+            excelSheet.Cells.VerticalAlignment = Excel.Constants.xlTop; //上下揃え: 上揃え
 
             // デフォルトで作成されたシートを削除
             if (!this.isCreatedSheet)
