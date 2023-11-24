@@ -20,25 +20,28 @@ namespace ToolCommon
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!disposedValue)
+            if (!this.disposedValue)
             {
                 if (disposing)
                 {
-                    //nop
+                    // TODO: マネージド状態を破棄します (マネージド オブジェクト)
                 }
-                Marshal.ReleaseComObject(ComObject);
-                disposedValue = true;
+                Marshal.ReleaseComObject(this.ComObject);
+                this.disposedValue = true;
             }
         }
 
         ~ComWrapper()
         {
-            Dispose(false);
+            // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
+            this.Dispose(disposing: false);
         }
 
         public void Dispose()
         {
-            Dispose(true);
+            // このコードを変更しないでください。クリーンアップ コードを 'Dispose(bool disposing)' メソッドに記述します
+            this.Dispose(disposing: true);
+            GC.SuppressFinalize(this);
         }
     }
 }
