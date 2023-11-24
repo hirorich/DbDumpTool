@@ -43,12 +43,20 @@ namespace DbDumpTool
             row[3] = 1.03f;
             row[4] = 12.3m;
             row[5] = DateTime.Now;
-            row[6] = new SampleReaderCreater();
+            row[6] = new ErrorObject();
             table.Rows.Add(row);
 
             // リーダー作成
             var reader = table.CreateDataReader();
             return reader;
+        }
+
+        private class ErrorObject
+        {
+            public override string ToString()
+            {
+                throw new Exception("エラーサンプル");
+            }
         }
     }
 }

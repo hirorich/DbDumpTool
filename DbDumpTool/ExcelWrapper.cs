@@ -41,7 +41,7 @@ namespace DbDumpTool
             }
 
             // 新規シート作成
-            Excel.Worksheet excelSheet = this.excelBook.ComObject.Worksheets.Add();
+            Excel.Worksheet excelSheet = this.excelBook.ComObject.Worksheets.Add(After: excelBook.ComObject.ActiveSheet);
             excelSheet.Name = sheetname;
 
             // シート内の全セルの設定
