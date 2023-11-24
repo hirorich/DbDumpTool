@@ -28,16 +28,18 @@ namespace DbDumpTool
         {
             using (var excelApp = new ExcelWrapper("TEST.xlsx"))
             {
-                using (var excelSheetWrap = excelApp.AddSheet("Sample"))
+                using (var excelSheetWrap = excelApp.AddSheet())
                 {
                     this.CreateSampleSheet(excelSheetWrap.ComObject);
+                    excelSheetWrap.ComObject.Name = "Sample";
                 }
                 excelApp.Save();
 
-                using (var excelSheetWrap = excelApp.AddSheet("Reader"))
+                using (var excelSheetWrap = excelApp.AddSheet())
                 {
                     var reader = SampleReaderCreater.Create();
                     writer.Write(excelSheetWrap.ComObject, reader);
+                    excelSheetWrap.ComObject.Name = "Reader";
                 }
                 excelApp.Save();
             }

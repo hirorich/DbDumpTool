@@ -25,7 +25,7 @@ namespace DbDumpTool
             this.excelBook.ComObject.SaveAs(filename);
         }
 
-        public ComWrapper<Excel.Worksheet> AddSheet(string sheetname)
+        public ComWrapper<Excel.Worksheet> AddSheet()
         {
             // デフォルトで作成されたシート名を取得
             var defaultSheetnames = new List<string>();
@@ -42,7 +42,6 @@ namespace DbDumpTool
 
             // 新規シート作成
             Excel.Worksheet excelSheet = this.excelBook.ComObject.Worksheets.Add(After: excelBook.ComObject.ActiveSheet);
-            excelSheet.Name = sheetname;
 
             // シート内の全セルの設定
             excelSheet.Cells.Font.Name = "Meiryo UI"; //フォント
