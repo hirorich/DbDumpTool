@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ToolCommon
 {
-    class ComWrapper<T> : IDisposable
+    public class ComWrapper<T> : IDisposable
     {
         public T ComObject { get; }
 
