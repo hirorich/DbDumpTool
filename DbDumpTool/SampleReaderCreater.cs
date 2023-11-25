@@ -51,6 +51,24 @@ namespace DbDumpTool
             return reader;
         }
 
+        public static DbDataReader CreateHeaderOnly()
+        {
+            DataTable table = new DataTable();
+
+            // カラム指定
+            table.Columns.Add("StringCol", typeof(string));
+            table.Columns.Add("IntCol", typeof(int));
+            table.Columns.Add("DoubleCol", typeof(double));
+            table.Columns.Add("FloatCol", typeof(float));
+            table.Columns.Add("DecimalCol", typeof(decimal));
+            table.Columns.Add("DateTimeCol", typeof(DateTime));
+            table.Columns.Add("ObjectCol", typeof(Object));
+
+            // リーダー作成
+            var reader = table.CreateDataReader();
+            return reader;
+        }
+
         private class ErrorObject
         {
             public override string ToString()

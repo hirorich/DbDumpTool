@@ -52,6 +52,14 @@ namespace DbDumpTool
                     excelSheet.ComObject.Name = "Reader";
                 }
                 excelApp.Save();
+
+                using (var excelSheet = excelApp.AddSheet())
+                {
+                    var reader = SampleReaderCreater.CreateHeaderOnly();
+                    writer.Write(excelSheet.ComObject, reader);
+                    excelSheet.ComObject.Name = "HeaderOnly";
+                }
+                excelApp.Save();
             }
 
             // ファイル出力完了
