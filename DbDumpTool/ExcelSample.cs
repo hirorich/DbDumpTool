@@ -11,6 +11,7 @@ using Microsoft.Office.Interop.Excel;
 using System.Drawing;
 using System.Reflection;
 using System.IO;
+using System.Windows.Forms;
 
 namespace DbDumpTool
 {
@@ -27,12 +28,14 @@ namespace DbDumpTool
 
         public void Sample()
         {
+            // 出力ファイルを指定
             string outputPath = Path.Combine(Environment.CurrentDirectory, "output");
             if (!Directory.Exists(outputPath)) {
                 Directory.CreateDirectory(outputPath);
             }
             string filename = String.Format("DBDUMP_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
 
+            // ファイル出力
             using (var excelApp = new ExcelWrapper(Path.Combine(outputPath, filename)))
             {
                 using (var excelSheet = excelApp.AddSheet())
@@ -50,6 +53,9 @@ namespace DbDumpTool
                 }
                 excelApp.Save();
             }
+
+            // ファイル出力完了
+            MessageBox.Show("ファイル出力完了");
         }
 
         private void CreateSampleSheet(Excel.Worksheet sheet)

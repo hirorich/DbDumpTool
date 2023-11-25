@@ -33,10 +33,7 @@ namespace DbDumpTool
             {
                 foreach (Excel.Worksheet sheet in this.excelBook.ComObject.Worksheets)
                 {
-                    using (var excelSheetWrap = new ComWrapper<Excel.Worksheet>(sheet))
-                    {
-                        defaultSheetnames.Add(excelSheetWrap.ComObject.Name);
-                    }
+                    defaultSheetnames.Add(sheet.Name);
                 }
             }
 
@@ -53,10 +50,7 @@ namespace DbDumpTool
             {
                 foreach (var name in defaultSheetnames)
                 {
-                    using (var excelSheetWrap = new ComWrapper<Excel.Worksheet>(this.excelBook.ComObject.Worksheets[name]))
-                    {
-                        excelSheetWrap.ComObject.Delete();
-                    }
+                    this.excelBook.ComObject.Worksheets[name].Delete();
                 }
                 this.isCreatedSheet = true;
             }
