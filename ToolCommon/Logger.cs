@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,11 +64,20 @@ namespace ToolCommon
         {
             private const string MESSAGE_FORMAT = "{0}[{1}][{2}] - {3}";
             private const string TIMSTAMP_FORMAT = "yyyy-MM-dd HH:mm:ss.fff";
-            private const string DATE_FORMAT = "yyyyMMdd";
 
             private static LoggerImpl instance;
+            private StreamWriter stream;
 
-            private LoggerImpl() { }
+            private LoggerImpl()
+            {
+                string outputPath = Path.Combine(Environment.CurrentDirectory, "log");
+                if (!Directory.Exists(outputPath))
+                {
+                    Directory.CreateDirectory(outputPath);
+                }
+                string filename = String.Format("log_{0}.log", DateTime.Now.ToString("yyyyMMdd"));
+                this.stream = new StreamWriter(Path.Combine(outputPath, filename), true);
+            }
 
             public static LoggerImpl GetInstance()
             {
@@ -82,7 +92,20 @@ namespace ToolCommon
             {
                 string now = DateTime.Now.ToString(TIMSTAMP_FORMAT);
                 string msg = String.Format(MESSAGE_FORMAT, now, level, type.FullName, message);
+                try
+                {
+                    this.stream.WriteLine(msg);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.ToString());
+                }
                 Console.WriteLine(msg);
+            }
+
+            ~LoggerImpl()
+            {
+                this.stream.Dispose();
             }
         }
     }

@@ -10,6 +10,7 @@ using ToolCommon;
 using Microsoft.Office.Interop.Excel;
 using System.Drawing;
 using System.Reflection;
+using System.IO;
 
 namespace DbDumpTool
 {
@@ -26,20 +27,26 @@ namespace DbDumpTool
 
         public void Sample()
         {
-            using (var excelApp = new ExcelWrapper("TEST.xlsx"))
+            string outputPath = Path.Combine(Environment.CurrentDirectory, "output");
+            if (!Directory.Exists(outputPath)) {
+                Directory.CreateDirectory(outputPath);
+            }
+            string filename = String.Format("DBDUMP_{0}.xlsx", DateTime.Now.ToString("yyyyMMdd_HHmmss"));
+
+            using (var excelApp = new ExcelWrapper(Path.Combine(outputPath, filename)))
             {
-                using (var excelSheetWrap = excelApp.AddSheet())
+                using (var excelSheet = excelApp.AddSheet())
                 {
-                    this.CreateSampleSheet(excelSheetWrap.ComObject);
-                    excelSheetWrap.ComObject.Name = "Sample";
+                    this.CreateSampleSheet(excelSheet.ComObject);
+                    excelSheet.ComObject.Name = "Sample";
                 }
                 excelApp.Save();
 
-                using (var excelSheetWrap = excelApp.AddSheet())
+                using (var excelSheet = excelApp.AddSheet())
                 {
                     var reader = SampleReaderCreater.Create();
-                    writer.Write(excelSheetWrap.ComObject, reader);
-                    excelSheetWrap.ComObject.Name = "Reader";
+                    writer.Write(excelSheet.ComObject, reader);
+                    excelSheet.ComObject.Name = "Reader";
                 }
                 excelApp.Save();
             }
