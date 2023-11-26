@@ -20,6 +20,32 @@
     }
     ```
 
+  - DbCommandCreater
+    - DBダンプ取得クエリを生成する
+
+    ``` c#
+    using DbType = System.Data.DbType; //エイリアス
+    DbConnection connection; //インスタンスを事前に生成
+
+    // パラメータ指定
+    var parameters = new List<string>();
+    parameters.Add("param");
+
+    // ソートキー指定(指定なしの場合は null)
+    var keys = new List<string>();
+    parameters.Add("key");
+
+    // コマンド生成
+    var creater = new DbCommandCreater(connection);
+    var command = creater.CreateCommand<string>("TABLE_NAME", "COLUMN_NAME", DbType.String, parameters, keys);
+
+    // コマンド実行
+    using (command)
+    {
+        var reader = command.ExecuteReader();
+    }
+    ```
+
 - ToolCommon
   - Logger
     - ログ出力部品
