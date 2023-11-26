@@ -46,7 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbCommandCreater.cs" />
     <Compile Include="DbDataReaderWriter.cs" />
+    <Compile Include="DbSample.cs" />
     <Compile Include="ExcelSample.cs" />
     <Compile Include="ExcelWrapper.cs" />
     <Compile Include="Form1.cs">
