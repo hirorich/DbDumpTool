@@ -44,48 +44,27 @@ namespace DbDumpTool
                 RowNum++;
                 for (int ColNum = 1; ColNum <= reader.FieldCount; ColNum++)
                 {
-                    string value = null;
-                    if (GetValue(ref value, reader, ColNum - 1))
+                    try
                     {
-                        if (value == null)
+                        if (reader.IsDBNull(ColNum - 1))
                         {
                             InputNull(sheet, RowNum, ColNum);
                         }
                         else
                         {
+                            string value = reader.GetValue(ColNum - 1).ToString();
                             Input(sheet, RowNum, ColNum, value);
                         }
                     }
-                    else
+                    catch (Exception e)
                     {
+                        this.logger.Exception(e);
                         InputError(sheet, RowNum, ColNum);
                     }
                 }
             }
 
             DecorateSheet(sheet, RowNum, reader.FieldCount);
-        }
-
-        private bool GetValue(ref string value, DbDataReader reader, int index)
-        {
-            value = null;
-            if (reader.IsDBNull(index))
-            {
-                return true;
-            }
-            else
-            {
-                try
-                {
-                    value = reader.GetValue(index).ToString();
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    this.logger.Exception(e);
-                    return false;
-                }
-            }
         }
 
         private void Input(Excel.Worksheet sheet, int RowNum, int ColNum, string value)
