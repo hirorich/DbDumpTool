@@ -32,6 +32,7 @@ namespace DbDumpTool
 
             // コマンド作成
             command.CommandText = this.CreateCommandString(tableName, columnName, parameters, orderKeys);
+            command.Prepare();
 
             return command;
         }
