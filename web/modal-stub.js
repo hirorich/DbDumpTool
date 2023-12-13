@@ -5,7 +5,7 @@ const modalOpen = (() => {
   let isOpend = false;
 
   // モーダル開閉定義
-  let stub = {
+  let mock = {
     title: "タイトル",
     open: () => {
       if (isOpend) return;
@@ -18,13 +18,13 @@ const modalOpen = (() => {
       // モーダル本体設定
       modal = document.createElement("div");
       modal.style = "position: fixed; top: 32px; right: 0px; left: 0px; z-index: 1003; background: #fff; display: none; width: 600px; margin: 0 auto; padding: 24px;";
-      modal.innerHTML = `  <h2 name="title">${stub.title}</h2>
+      modal.innerHTML = `  <h2 name="title">${mock.title}</h2>
         <div name="body"></div>`;
       document.body.appendChild(modal);
 
       // モーダルbody設定
       modalBody = modal.querySelector("[name=body]");
-      stub.onOpen(modalBody);
+      mock.onOpen(modalBody);
 
       // モーダル表示
       modalCover.style.display = "block";
@@ -35,7 +35,7 @@ const modalOpen = (() => {
       if (!isOpend) return;
 
       // モーダルbody終了処理
-      stub.onClose(modalBody);
+      mock.onClose(modalBody);
 
       // モーダル要素削除
       document.body.removeChild(modal);
@@ -55,26 +55,26 @@ const modalOpen = (() => {
 
   // モーダルの内部定義
   // モーダルタイトル
-  stub.title = "スタブ";
+  mock.title = "スタブ";
 
   // モーダルを閉じるボタン
   let button;
 
   // モーダルを開いた際の処理
-  stub.onOpen = (modalBody) => {
+  mock.onOpen = (modalBody) => {
     button = document.createElement("input");
     button.type = "button";
     button.value = "モーダルを閉じる";
-    button.addEventListener("click", stub.close);
+    button.addEventListener("click", mock.close);
     modalBody.appendChild(button);
   };
 
   // モーダルを閉じた際の処理
-  stub.onClose = (modalBody) => {
-    button.removeEventListener("click", stub.close);
+  mock.onClose = (modalBody) => {
+    button.removeEventListener("click", mock.close);
     button = undefined;
   }
 
-  return stub.open;
+  return mock.open;
 })();
 
