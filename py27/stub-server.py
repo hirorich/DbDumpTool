@@ -17,7 +17,7 @@ class RESTRequestHandler(BaseHTTPRequestHandler):
 
             elif self.path.startswith("/api"):
                 'スタブデータ読み込み'
-                with open('./data/stub.json') as f:
+                with open('./data/api.json') as f:
                     data = json.load(f)
                 body = json.dumps(data).encode('utf-8')
 
@@ -30,6 +30,19 @@ class RESTRequestHandler(BaseHTTPRequestHandler):
 
                 'ボディ設定'
                 self.wfile.write(body)
+
+            elif self.path.startswith("/redirect"):
+                'スタブデータ読み込み'
+                with open('./data/redirect.json') as f:
+                    data = json.load(f)
+                redirectUrl = data["redirectUrl"]
+
+                'ステータスコード設定'
+                self.send_response(301)
+
+                'ヘッダー設定'
+                self.send_header("Location", redirectUrl)
+                self.end_headers()
 
             else:
                 raise RuntimeError("path誤り")

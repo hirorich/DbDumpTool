@@ -1,0 +1,9 @@
+{
+    "id": 123,
+    "data": "sample",
+    "list": [4,5,6],
+    "obj": {
+        "param1" : "test",
+        "param2" : 789
+    }
+}
