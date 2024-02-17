@@ -7,58 +7,66 @@ class RESTRequestHandler(BaseHTTPRequestHandler):
     
     def do_GET(self):
         try:
-            'Request information'
-            print("<request path>")
-            print(self.path)
-            print("")
+            'リクエスト情報'
             print("<request headers>")
             print(self.headers)
+            print("</request headers>")
 
-            'Load stub data'
-            with open('./data/stub.json') as f:
-                response = json.load(f)
+            if self.path is None or self.path == "/":
+                raise RuntimeError("path指定なし")
 
-            'Response data'
-            responseBody = json.dumps(response)
-            responseData = responseBody.encode('utf-8')
+            elif self.path.startswith("/api"):
+                'スタブデータ読み込み'
+                with open('./data/stub.json') as f:
+                    data = json.load(f)
+                body = json.dumps(data).encode('utf-8')
 
-            'success status code'
-            self.send_response(200)
+                'ステータスコード設定'
+                self.send_response(200)
+
+                'ヘッダー設定'
+                self.send_header("Content-type", "application/json")
+                self.end_headers()
+
+                'ボディ設定'
+                self.wfile.write(body)
+
+            else:
+                raise RuntimeError("path誤り")
         except Exception as e:
             print(e)
 
-            'Response data'
-            response = {}
-            responseBody = json.dumps(response)
-            responseData = responseBody.encode('utf-8')
+            'ステータスコード設定'
+            self.send_response(404)
 
-            'error status code'
-            self.send_response(500)
-        finally:
-
-            'return json'
+            'ヘッダー設定'
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            self.wfile.write(responseData)
+
+            'ボディ設定'
+            body = json.dumps({}).encode('utf-8')
+            self.wfile.write(body)
 
 def run_server(port):
-    'Starts the REST server'
+    'サーバー設定'
     http_server = HTTPServer(('', port), RESTRequestHandler)
-    print("running server: http://localhost:{}".format(http_server.server_port))
-    print("Ctrl + C: close server")
+    print("Running on http://localhost:{} (Ctrl + C to quit)".format(http_server.server_port))
 
     try:
+        'サーバー起動'
         http_server.serve_forever()
     except KeyboardInterrupt:
+        'Ctrl + C 押下'
         pass
 
-    print("closing server.")
+    'サーバー終了'
+    print("Quit server.")
     http_server.server_close()
-    print("server is closed.")
-
 
 def main(argv):
-    run_server(int(argv[0]))
+    '引数からポート番号取得'
+    port = int(argv[0])
+    run_server(port)
 
 if __name__ == '__main__':
     main(sys.argv[1:])
