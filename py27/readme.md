@@ -12,11 +12,12 @@
 1. 【ゲスト】任意のパス(aaa)にファイル配置
     ```
     aaa
-      stub-server.py
-      data
-        api.json
-        index.html
-        redirect.json
+        run-stub-server.sh
+        stub-server.py
+        data
+            api.json
+            index.html
+            redirect.json
     ```
 
 ## 起動
@@ -30,6 +31,11 @@
     py -2.7 -m stub-server 8808
     ```
     - ポート番号に0を指定すると空いているポートを自動的に使用
+
+    ```
+    run-stub-server.sh
+    ```
+    - ポートが決まっている場合は shell からの起動も可能
 
 ## 動作検証
 1. 【ホスト】 `api.json` の内容が返却されることを確認
