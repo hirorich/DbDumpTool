@@ -1,9 +1,28 @@
 # Python 2.7 によるスタブRESTサーバ
 ## 事前準備
+1. 【ホスト】Node.js で空きポートを調べる
+    ``` javascript
+    const http = require("http"); //不要かも
+
+    /** ポート番号を自動割り当てし、速攻終了する */
+    (() => {
+        let server = http.createServer();
+        let port = 0;
+        server.on('listening', () => {
+            port = server.address().port;
+            server.close();
+        });
+        server.on('close', () => console.log(port));
+        server.on('error', (err) => console.log(err));
+        server.listen(port);
+    })();
+    ```
+
 1. 【ホスト】VirtualBoxのポートフォワードを行う
-    - プロトコル：TCP
-    - ホストポート：9909
-    - ゲストポート：8808
+    - 以下が空きポートと仮定
+      - プロトコル：TCP
+      - ホストポート：9909
+      - ゲストポート：8808
 
 1. 【ホスト】 `api.json` に任意のデータを設定
 

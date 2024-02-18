@@ -80,7 +80,7 @@ class RESTRequestHandler(BaseHTTPRequestHandler):
 def run_server(port):
     'サーバー設定'
     http_server = HTTPServer(("", port), RESTRequestHandler)
-    print("Running on http://localhost:{} (Ctrl + C to quit)".format(http_server.server_port))
+    print("Running on http://127.0.0.1:{} (Ctrl + C to quit)".format(http_server.server_port))
 
     try:
         'サーバー起動'
