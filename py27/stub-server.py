@@ -46,8 +46,9 @@ class RESTRequestHandler(BaseHTTPRequestHandler):
 
             elif self.path.startswith("/page"):
                 'スタブデータ読み込み'
-                with open("./data/index.html", mode="r") as f:
-                    data = f.read()
+                with open("./data/index.html", mode="rb") as f:
+                    'Python2 では ascii がデフォルトであるため、バイナリモードで開いて utf-8 にデコード'
+                    data = f.read().decode(encoding="utf-8")
                 body = data.encode("utf-8")
 
                 'ステータスコード設定'
