@@ -49,7 +49,6 @@ class RESTRequestHandler(BaseHTTPRequestHandler):
                 with open("./data/index.html", mode="r") as f:
                     data = f.read()
                 body = data.encode("utf-8")
-                print(body)
 
                 'ステータスコード設定'
                 self.send_response(200)
