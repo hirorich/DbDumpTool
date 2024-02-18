@@ -5,13 +5,17 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
+        function openPage() {
+            window.location.href = "/redirect";
+        };
         function openTab() {
             window.open("/redirect");
-        }
+        };
     </script>
     <title>Document</title>
 </head>
 <body>
-    <button onclick="openTab()">to redirect page</button>
+    <button onclick="openPage()">Same Tab</button>
+    <button onclick="openTab()">Other Tab</button>
 </body>
 </html>

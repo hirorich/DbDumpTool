@@ -37,7 +37,7 @@
     curl -X GET http://localhost:9909/api -G -d param=value -H "auth: abc"
     ```
 
-1. 【ホスト】ボタン押下後に別タブで `redirect.json` で指定したURLにリダイレクトすること
+1. 【ホスト】ボタン押下後に `redirect.json` で指定したURLにリダイレクトすること
     ```
     http://localhost:9909/page
     ```
