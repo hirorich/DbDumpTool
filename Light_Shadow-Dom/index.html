@@ -22,6 +22,7 @@
             <button class="class2" onclick="func2();">sample 2</button>
             <button class="class3" onclick="func3();">sample 3</button>
             <button class="class4" onclick="func4();">sample 4</button>
+            <button class="class5" onclick="func5();">sample 5</button>
         </div>
     </div>
 
@@ -41,6 +42,7 @@
         <button class="class2" onclick="func2();">sample 2</button>
         <button class="class3" onclick="func3();">sample 3</button>
         <button class="class4" onclick="func4();">sample 4</button>
+        <button class="class5" onclick="func5();">sample 5</button>
     </template>
 
     <div>
@@ -60,6 +62,7 @@
         <button class="class2" onclick="func2();">sample 2</button>
         <button class="class3" onclick="func3();">sample 3</button>
         <button class="class4" onclick="func4();">sample 4</button>
+        <button class="class5" onclick="func5();">sample 5</button>
     </template>
 
     <div>
@@ -74,12 +77,24 @@
     </div>
 
     <div>
+        <h2>Sample5: iframe で読み込み</h2>
+        <ul>
+            <li>iframe 内の css/js が適用される</li>
+            <li>iframe 外の css/js が適用されない</li>
+        </ul>
+        <div style="width: 300px; height: 50px;">
+            <iframe src="./sample5.html" width="500px" height="100%" style="border: 0px;"></iframe>
+        </div>
+    </div>
+
+    <div>
         <h2>結論</h2>
         <ul>
             <li>Light DOM で読み込んだ css は、 Light DOM 内にのみ適用される</li>
             <li>Shadow DOM で読み込んだ css は、その Shadow DOM 内にのみ適用される</li>
             <li>template タグで読み込んだ js は、 Light/Shadow DOM に関わらず、ページ全体に適用される</li>
             <li>innerHTML では、 js を読み込めない</li>
+            <li>iframe は、内外に影響し合わない</li>
         </ul>
     </div>
 </body>

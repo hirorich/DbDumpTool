@@ -27,6 +27,7 @@ function initSample4() {
     <button class="class2" onclick="func2();">sample 2</button>
     <button class="class3" onclick="func3();">sample 3</button>
     <button class="class4" onclick="func4();">sample 4</button>
+    <button class="class5" onclick="func5();">sample 5</button>
 `;
     shadowRoot.appendChild(el);
 }
