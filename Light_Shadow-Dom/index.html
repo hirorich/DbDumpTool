@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="./css/sample1.css" rel="stylesheet" />
+    <script src="./js/sample1.js"></script>
+    <script src="./index.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h2>Sample1</h2>
+        <ul>
+            <li>Light DOM の class1, class2 が適用される</li>
+            <li>Shadow DOM の class3, class4 が適用されない</li>
+            <li>script はページ全体に適用される</li>
+        </ul>
+        <div id="sample1">
+            <button class="class1" onclick="func1();">sample 1</button>
+            <button class="class2" onclick="func2();">sample 2</button>
+            <button class="class3" onclick="func3();">sample 3</button>
+            <button class="class4" onclick="func4();">sample 4</button>
+        </div>
+    </div>
+
+    <div>
+        <h2>Sample2: Light DOM に template で読み込み</h2>
+        <ul>
+            <li>Light DOM の class1, class2 が適用される</li>
+            <li>Shadow DOM の class3, class4 が適用されない</li>
+            <li>script はページ全体に適用される</li>
+        </ul>
+        <div id="sample2"></div>
+    </div>
+    <template id="template2">
+        <link href="./css/sample2.css" rel="stylesheet" />
+        <script src="./js/sample2.js"></script>
+        <button class="class1" onclick="func1();">sample 1</button>
+        <button class="class2" onclick="func2();">sample 2</button>
+        <button class="class3" onclick="func3();">sample 3</button>
+        <button class="class4" onclick="func4();">sample 4</button>
+    </template>
+
+    <div>
+        <h2>Sample3: Shadow DOM に template で読み込み</h2>
+        <ul>
+            <li>Light DOM の class1, class2 が適用されない</li>
+            <li>Shadow DOM の class3 が適用される</li>
+            <li>Shadow DOM の class4 が適用されない</li>
+            <li>script はページ全体に適用される</li>
+        </ul>
+        <div id="sample3"></div>
+    </div>
+    <template id="template3">
+        <link href="./css/sample3.css" rel="stylesheet" />
+        <script src="./js/sample3.js"></script>
+        <button class="class1" onclick="func1();">sample 1</button>
+        <button class="class2" onclick="func2();">sample 2</button>
+        <button class="class3" onclick="func3();">sample 3</button>
+        <button class="class4" onclick="func4();">sample 4</button>
+    </template>
+
+    <div>
+        <h2>Sample4: Shadow DOM にベタ打ちで読み込み</h2>
+        <ul>
+            <li>Light DOM の class1, class2 が適用されない</li>
+            <li>Shadow DOM の class3 が適用されない</li>
+            <li>Shadow DOM の class4 が適用される</li>
+            <li>script が読み込まれない</li>
+        </ul>
+        <div id="sample4"></div>
+    </div>
+
+    <div>
+        <h2>結論</h2>
+        <ul>
+            <li>Light DOM で読み込んだ css は、 Light DOM 内にのみ適用される</li>
+            <li>Shadow DOM で読み込んだ css は、その Shadow DOM 内にのみ適用される</li>
+            <li>template タグで読み込んだ js は、 Light/Shadow DOM に関わらず、ページ全体に適用される</li>
+            <li>innerHTML では、 js を読み込めない</li>
+        </ul>
+    </div>
+</body>
+</html>
