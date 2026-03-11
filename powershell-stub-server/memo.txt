@@ -1,0 +1,69 @@
+✅ 推奨ディレクトリ構成（PowerShell + psd1 + JSON/YAML 出力）
+以下が最も保守しやすく、環境差分やレスポンスファイル管理にも強い構成です。
+stub/
+  config/
+    settings.psd1         # どの設定ファイルを読み込むか列挙（Include）
+    server.psd1           # 待受設定
+    log.psd1              # ログ設定
+    upstream.psd1         # パススルー（本物SOAP）設定
+    responses.psd1        # SOAPAction/Operation → レスポンスファイル対応表
+
+  responses/
+    SomeOperation.xml
+    default.xml
+
+  tools/
+    export-settings.ps1   # psd1 → json/yaml 変換ツール
+  stub.ps1                # SOAPスタブ本体（前回までのコード）
+  run.bat                 # Shift-JISで保存（PowerShell起動）
+
+
+✅ .psd1（設定ファイル例）
+■ config/settings.psd1（読み込むファイルの一覧）
+PowerShell@{  Include = @(    'server.psd1'    'log.psd1'    'upstream.psd1'    'responses.psd1'  )}その他の行を表示する
+
+■ config/server.psd1
+PowerShell@{  # スタブの待受設定  Listen = @{    Host = 'localhost'    Port = 0               # 0 ⇒ 空きポートを自動割当    Path = '/Service/'     # 呼び出し側に合わせて変更  }}その他の行を表示する
+
+■ config/log.psd1
+PowerShell@{  Log = @{    Enabled = $true    Directory = '.\logs'    DumpRequestBody = $true    DumpHeaders = $true  }}その他の行を表示する
+
+■ config/upstream.psd1
+PowerShell@{  Upstream = @{    Enabled = $false    Url = 'https://real.example.com/Service.svc'    Auth = @{      Type = 'none'        # none / basic / bearer      Username = ''      Password = ''      Token = ''    }  }}その他の行を表示する
+
+■ config/responses.psd1
+PowerShell@{  Responses = @{    SomeOperation = 'responses\SomeOperation.xml'    Default       = 'responses\default.xml'  }}その他の行を表示する
+
+🔧 設定を読み込んで1つにマージする（stub.ps1 で使用）
+PowerShell$cfgRoot = Join-Path $PSScriptRoot 'config'# 親 settings.psd1 読み込み$meta = Import-PowerShellDataFile (Join-Path $cfgRoot 'settings.psd1')# マージ先$cfg = @{}foreach ($fname in $meta.Include) {    $path = Join-Path $cfgRoot $fname    if (Test-Path $path) {        $part = Import-PowerShellDataFile $path        foreach ($k in $part.Keys) {            $cfg[$k] = $part[$k]   # 同名キーは後勝ち        }    }}# 結果：$cfg に Listen / Log / Upstream / Responses が揃う``その他の行を表示する
+
+✅ psd1 → JSON / YAML 変換ツール (tools/export-settings.ps1)
+
+JSON → 標準で完璧に出力可能
+YAML → Windows標準だけで“設定用途として十分な簡易出力”
+
+
+■ tools/export-settings.ps1（完成版）
+PowerShellparam(    [string]$ConfigDir = "..\config",    [string]$JsonOut   = "..\settings.json",    [string]$YamlOut   = "..\settings.yaml")# ------- psd1 読み込み（マージ） -------$root = Resolve-Path $ConfigDir$meta = Import-PowerShellDataFile (Join-Path $root 'settings.psd1')$cfg = @{}foreach ($fname in $meta.Include) {    $path = Join-Path $root $fname    if (Test-Path $path) {        $part = Import-PowerShellDataFile $path        foreach ($k in $part.Keys) {            $cfg[$k] = $part[$k]        }    }}Write-Host "[OK] Config loaded."# ------- JSON 出力（標準） -------$cfg | ConvertTo-Json -Depth 50 | Out-File -Encoding utf8 $JsonOutWrite-Host "[OK] Exported JSON: $JsonOut"# ------- YAML 出力（追加モジュールなしの簡易版） -------function ConvertTo-SimpleYaml {    param($Value, [int]$Indent = 0)    $sp = ' ' * $Indent    if ($null -eq $Value) { return "${sp}null" }    if ($Value -is [bool]) { return "${sp}$($Value.ToString().ToLower())" }    if ($Value -is [int] -or         $Value -is [long] -or         $Value -is [double] -or        $Value -is [decimal]) {        return "${sp}$Value"    }    if ($Value -is [string]) {        $escaped = $Value.Replace('\','\\').Replace('"','\"')        return "${sp}\"$escaped\""    }    # Hashtable    if ($Value -is [System.Collections.IDictionary]) {        $lines = @()        foreach ($k in ($Value.Keys | Sort-Object)) {            $v = $Value[$k]            if ($v -is [System.Collections.IDictionary] -or                ($v -is [System.Collections.IEnumerable] -and -not ($v -is [string]))) {                $lines += "${sp}$k:"                $lines += ConvertTo-SimpleYaml -Value $v -Indent ($Indent + 2)            } else {                $vv = (ConvertTo-SimpleYaml -Value $v -Indent 0).TrimStart()                $lines += "${sp}$k: $vv"            }        }        return ($lines -join "`n")    }    # Array    if ($Value -is [System.Collections.IEnumerable] -and -not ($Value -is [string])) {        $lines = @()        foreach ($item in $Value) {            if ($item -is [System.Collections.IDictionary] -or                ($item -is [System.Collections.IEnumerable] -and -not ($item -is [string]))) {                $lines += "${sp}-"                $lines += ConvertTo-SimpleYaml -Value $item -Indent ($Indent + 2)            } else {                $vv = (ConvertTo-SimpleYaml -Value $item -Indent 0).TrimStart()                $lines += "${sp}- $vv"            }        }        return ($lines -join "`n")    }    # fallback：文字列扱い    $fallback = $Value.ToString().Replace('\','\\').Replace('"','\"')    return "${sp}\"$fallback\""}$yaml = ConvertTo-SimpleYaml -Value $cfg -Indent 0$yaml | Out-File -Encoding utf8 $YamlOutWrite-Host "[OK] Exported YAML: $YamlOut"その他の行を表示する
+
+📌 使い方
+cd tools
+powershell -ExecutionPolicy Bypass -File .\export-settings.ps1
+
+生成される：
+settings.json
+settings.yaml
+
+
+🚀 これで何ができる？
+
+PowerShell 用の設定は psd1（コメント可）で管理
+JSON に変換すれば Node.js / Python にそのまま渡せる
+YAML も最低限の形で生成できる（必要に応じて本格対応も可能）
+設定を目的別にファイル分割 → 運用・保守が圧倒的に楽
+
+
+必要であれば、
+stub.ps1（SOAPスタブ本体）にこの設定を組み込んだ完全版
+（Listen 設定 → 動的ポート割り当て → レスポンス配送 → ログ設定）まで統合したものも作成できます。
+いつでも言ってください！
