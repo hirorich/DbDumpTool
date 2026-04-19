@@ -1,32 +1,88 @@
 const express = require("express");
+const fs = require("fs");
 const app = express();
 const PORT = 8808;
 
+// ==================================================
+// JSONファイル読み取り
+function loadJsonFile(filepath) {
+    return JSON.parse(fs.readFileSync(filepath, "utf8"));
+}
+
+// ==================================================
+// ログ出力
+var logfile;
+function openLogFile() {
+    if (logfile === undefined) {
+        var timestamp = (new Date().toLocaleString()).replace(/ |-|:/g, "");
+        logfile = fs.openSync(__dirname + `/log/${timestamp}_log.txt`, "w");
+    }
+}
+function writeLogFile(text) {
+    if (text === undefined) return;
+
+    if (typeof text === "object") text = JSON.stringify(text, null, "    ");
+
+    if (logfile !== undefined) {
+        fs.writeSync(logfile, text);
+        fs.writeSync(logfile, "\n");
+    }
+
+    console.log(text);
+}
+function closeLogFile() {
+    if (logfile !== undefined) {
+        fs.closeSync(logfile);
+        logfile = undefined;
+    }
+}
+
+// ==================================================
+// jsonをpostで受け取る設定
+app.use(express.json());
+app.use(express.urlencoded({extended: true}));
+
 // 共通の前後処理
 app.use("/*", (request, response, next) => {
-    // 前処理
-    console.log("> request originalUrl");
-    console.log(request.originalUrl);
-    console.log("> request headers");
-    console.log(request.headers);
+    try {
+        // 前処理
+        openLogFile();
+        writeLogFile("> request originalUrl");
+        writeLogFile(request.originalUrl);
+        writeLogFile("> request headers");
+        writeLogFile(request.headers);
 
-    // 個別処理
-    next();
+        // 個別処理
+        next();
 
-    // 後処理
-    console.log(`[${new Date().toLocaleString()}] "${request.method} ${request.originalUrl} HTTP/${request.httpVersion}" ${response.statusCode} -`);
+        // 後処理
+        writeLogFile(`[${new Date().toLocaleString()}] "${request.method} ${request.originalUrl} HTTP/${request.httpVersion}" ${response.statusCode} -`);
+    } catch(e) {
+        console.log(e);
+    } finally {
+        closeLogFile();
+    }
 });
 
 // JSON返却
 app.get("/api", (request, response) => {
-    var data = require(__dirname + "/data/api.json");
-    response.json(data);
+    // リクエストデータ出力
+    writeLogFile("> request body");
+    writeLogFile(request.body);
+
+    // レスポンスデータ
+    var data = loadJsonFile(__dirname + "/data/api.json");
+    writeLogFile("> response data");
+    writeLogFile(data);
+
+    // 返却
+    response.status(200).json(data);
 });
 
 // リダイレクト
 app.get("/redirect", (request, response) => {
-    var data = require(__dirname + "/data/redirect.json");
-    response.redirect(301, data["redirectUrl"]);
+    var data = loadJsonFile(__dirname + "/data/redirect.json");
+    response.redirect(301, `${data["redirectUrl"]}`);
 });
 
 // html
